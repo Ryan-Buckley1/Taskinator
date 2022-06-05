@@ -1,5 +1,22 @@
 var formEl = document.querySelector("#task-form");
 var tasksToDoEl = document.querySelector("#tasks-to-do");
+var taskFormHandler = function(event) {
+    event.preventDefault();
+    var taskNameInput = document.querySelector("input[name='task-name']").value;
+    var taskTypeInput = document.querySelector("select[name='task-type']").value;
+    console.log(taskTypeInput);
+    if (!taskNameInput || !taskTypeInput) {
+        alert("You need to fill out the task form!");
+        return false;
+    }
+    formEl.reset();
+    var taskDataObj ={
+        name: taskNameInput,
+        type: taskTypeInput,
+    };
+    createTaskEl(taskDataObj);
+    
+};
 var createTaskEl = function(taskDataObj){
     var listItemEl = document.createElement("li");
     listItemEl.className = "task-item";
@@ -12,17 +29,6 @@ var createTaskEl = function(taskDataObj){
 
     tasksToDoEl.appendChild(listItemEl);
 }
-var createTaskHandler = function(event) {
-    event.preventDefault();
-    var taskNameInput = document.querySelector("input[name='task-name']").value;
-    var taskTypeInput = document.querySelector("select[name='task-type']").value;
-    console.log(taskTypeInput);
-    var taskDataObj ={
-        name: taskNameInput,
-        type: taskTypeInput,
-    };
-    createTaskEl(taskDataObj);
-    
-};
 
-formEl.addEventListener("submit", createTaskHandler);
+
+formEl.addEventListener("submit", taskFormHandler);
