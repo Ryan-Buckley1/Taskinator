@@ -10,7 +10,7 @@ var taskFormHandler = function(event) {
     event.preventDefault();
     var taskNameInput = document.querySelector("input[name='task-name']").value;
     var taskTypeInput = document.querySelector("select[name='task-type']").value;
-    console.log(taskTypeInput);
+    // console.log(taskTypeInput);
     if (!taskNameInput || !taskTypeInput) {
         alert("You need to fill out the task form!");
         return false;
@@ -51,7 +51,25 @@ var createTaskEl = function(taskDataObj){
     var taskActionsEl = createTaskActions(taskIdCounter);
     listItemEl.appendChild(taskActionsEl);
 
-    tasksToDoEl.appendChild(listItemEl);
+    switch (taskDataObj.status) {
+        case "to do":
+            taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 0;
+            tasksToDoEl.append(listItemEl);
+            break;
+        case "in progress":
+            taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 1;
+            tasksInProgressEl.append(listItemEl);
+            break;
+        case "completed":
+            taskActionsEl.querySelector("select[name='status-change']").selectedIndex = 2;
+            tasksCompletedEl.append(listItemEl);
+            break;
+        default:
+            console.log("whoops");
+
+    }
+
+    // tasksToDoEl.appendChild(listItemEl);
     taskDataObj.id = taskIdCounter
     tasks.push(taskDataObj);
     taskIdCounter++;
@@ -101,7 +119,7 @@ formEl.addEventListener("submit", taskFormHandler);
 
 var taskButtonHandler = function(event) {
     var targetEl = event.target;
-    console.log(event.target);
+    // console.log(event.target);
     if (targetEl.matches(".edit-btn")) {
         var taskId = targetEl.getAttribute("data-task-id");
         editTask(taskId);
@@ -173,6 +191,19 @@ var saveTasks = function() {
 
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
+var loadTasks = function() {
+    var savedTasks = localStorage.getItem("tasks");
+    if (!savedTasks) {
+        return false;
+    }
+    savedTasks = JSON.parse(savedTasks);
+    for (var i = 0; i < savedTasks.length; i++) {
+        console.log(savedTasks);
+        createTaskEl(savedTasks[i]);
+    }
+}
 
 pageContentEl.addEventListener("click", taskButtonHandler);
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
+
+loadTasks();
